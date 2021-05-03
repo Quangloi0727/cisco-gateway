@@ -12,12 +12,13 @@ const { checkKeyValueExists } = require("../helpers/functions");
 
 /**
  * Tạo lịch sử bấm ivr của khách hàng
+ * target - IVR_1, IVR_2, IVR_3: vào câu hỏi 1, 2, ,3
  */
 exports.create = async (db, dbMssql, body) => {
   try {
-    let { RouterCallKey, code, ternalID, RouterCallKeyDay, PhoneNumber, CallGUID,CallGUIDCustomize } = body;
+    let { RouterCallKey, code, target, ternalID, RouterCallKeyDay, PhoneNumber, CallGUID,CallGUIDCustomize } = body;
 
-    const doc = await db.collection(IVR_HISTORIES_COLLECTION).insertOne({
+    let _insert = {
       RouterCallKey,
       code,
       ternalID,
@@ -27,7 +28,13 @@ exports.create = async (db, dbMssql, body) => {
       PhoneNumber,
       is_deleted: false,
       created_at: (Date.now() / 1000) | 0,
-    });
+    }
+
+    if(target){
+      _insert.target = target;
+    }
+
+    const doc = await db.collection(IVR_HISTORIES_COLLECTION).insertOne(_insert);
     // insertedCount: 1, insertedId: 5e6ce37d6b261d103030ca39
 
     return doc;
