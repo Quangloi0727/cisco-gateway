@@ -15,11 +15,11 @@ const { checkKeyValueExists } = require("../helpers/functions");
  */
 exports.create = async (db, dbMssql, body) => {
   try {
-    let { RouterCallKey, value, ternalID, RouterCallKeyDay, PhoneNumber, CallGUID,CallGUIDCustomize } = body;
+    let { RouterCallKey, code, ternalID, RouterCallKeyDay, PhoneNumber, CallGUID,CallGUIDCustomize } = body;
 
     const doc = await db.collection(IVR_PROGRESS_COLLECTION).insertOne({
       RouterCallKey,
-      value,
+      code,
       ternalID,
       CallGUID,
       CallGUIDCustomize,

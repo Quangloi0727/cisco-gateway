@@ -32,12 +32,12 @@ module.exports = {
     FIELD_IVR_PROGRESS: {
         getName: {
             ternalID: "id dự án",
-            value: "Vị trí IVR",
+            code: "Vị trí IVR",
             RouterCallKey: "Mã cuộc gọi",
             RouterCallKeyDay: "Mã cuộc gọi trong ngày",
             PhoneNumber: "SĐT khách hàng",
         },
-        require: ["ternalID", "value", "RouterCallKey", "RouterCallKeyDay", "PhoneNumber"],
+        require: ["ternalID", "code", "RouterCallKey", "RouterCallKeyDay", "PhoneNumber"],
         checkExists: [],
     },
 };
