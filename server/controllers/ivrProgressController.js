@@ -32,9 +32,9 @@ const APIFeatures = require("../utils/apiFeatures");
 
 /**
  * API lưu lịch sử nghe IVR của khách hàng
- * - IVR_S: Vào IVR
+ * - IVR_S: Vào IVR START
  * - IVR_1, IVR_2, IVR_3: vào câu hỏi 1, 2, ,3
- * - IVR_E: kết thúc IVR
+ * - IVR_E: Vào IVR END
  */
 exports.create = async (req, res, next) => {
   try {
