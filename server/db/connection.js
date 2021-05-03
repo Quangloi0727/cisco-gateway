@@ -1,46 +1,48 @@
 const { MongoClient } = require("mongodb");
 var sqlsv = require("mssql");
 
-/**
- * connect DB mongodb npm v3
- * NOTE: các biến: DB_HOST
-DB_PORT
-DB_USER
-DB_PASS
-DATABASE
---> lấy từ global
- * @param {string} host 
- * @param {string} port 
- * @param {string} user 
- * @param {string} pass 
- * @param {string} database 
- */
+const {
+  DATABASE,
+  DB_HOST,
+  DB_PORT,
+  DB_USER,
+  DB_PASS,
+  DB_RS_Name,
+} = process.env;
+
 let initDB = async (
-    host = DB_HOST,
-    port = DB_PORT,
-    user = DB_USER,
-    pass = DB_PASS,
-    database = DATABASE
+  host = DB_HOST,
+  port = DB_PORT,
+  user = DB_USER,
+  pass = DB_PASS,
+  database = DATABASE,
+  RS_Name = DB_RS_Name
 ) => {
-    try {
-        let path = pathDB(host, port, database, user, pass);
-        console.log("connecting: ", path);
-        console.log("global DATABASE: ", process.env.DATABASE);
-        return await MongoClient.connect(path, {useUnifiedTopology: true});
-    } catch (error) {
-        throw error;
-    }
+  try {
+    let path = pathDB(host, port, database, user, pass, RS_Name);
+    console.log("connect", path);
+    // console.log("global DATABASE: ", process.env.DATABASE);
+    return await MongoClient.connect(path, {useUnifiedTopology: true});
+  } catch (error) {
+    throw error;
+  }
 };
 
-function pathDB(host, port, database, user, pass) {
-    let path = `mongodb://${host}:${port}/${database}`;
-    if (user !== "#" && pass !== "#")
-        path = `mongodb://${encodeURIComponent(user)}:${encodeURIComponent(
-            pass
-        )}@${host}:${port}/${database}`;
-    return path;
-}
+function pathDB(host, port, database, user, pass, RS_Name) {
+  let path = `mongodb://${host}:${port}/${database}`;
+  if (user !== "#" && pass !== "#") {
+    path = `mongodb://${encodeURIComponent(user)}:${encodeURIComponent(
+      pass
+    )}@${host}:${port}/${database}`;
+    if (RS_Name && RS_Name != "#") {
+      path = `mongodb://${encodeURIComponent(user)}:${encodeURIComponent(
+        pass
+      )}@${host.split(',').map(i => `${i}:${port}`)}/${database}?replicaSet=${RS_Name}`;
+    }
+  }
 
+  return path;
+}
 
 let initMssqlDB = async () => {
   try {
@@ -51,9 +53,9 @@ let initMssqlDB = async () => {
       password,
       server,
       database,
-      "options": {
-        "enableArithAbort": false, // ko hiểu, chỉ là thêm vào config mssql cho ko báo warning khi running
-      }
+      options: {
+        enableArithAbort: false, // ko hiểu, chỉ là thêm vào config mssql cho ko báo warning khi running
+      },
     });
   } catch (error) {
     throw error;
@@ -61,7 +63,7 @@ let initMssqlDB = async () => {
 };
 
 module.exports = {
-    initDB,
-    pathDB,
-    initMssqlDB,
+  initDB,
+  pathDB,
+  initMssqlDB,
 };
